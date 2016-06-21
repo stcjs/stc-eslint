@@ -1,9 +1,9 @@
 import Plugin from 'stc-plugin';
-import {linter} from 'eslint';
 import defaultOptions from './default_options.js';
 import {extend} from 'stc-helper';
 
 let options = null;
+let linter = null;
 
 /**
  * Use ESlint to verify code
@@ -13,6 +13,10 @@ export default class ESlintPlugin extends Plugin {
    * run
    */
   async run(){
+    if(!linter){
+      linter = require('eslint').linter;
+    }
+    
     if(!options){
       options = extend({}, defaultOptions);
       options = extend(options, this.options);
@@ -36,6 +40,12 @@ export default class ESlintPlugin extends Plugin {
       }
       this.error(item.message, item.line, item.column);
     });
+  }
+  /**
+   * use cluster
+   */
+  static cluster(){
+    return true;
   }
   /**
    * enable cache
