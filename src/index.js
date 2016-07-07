@@ -21,13 +21,18 @@ export default class ESlintPlugin extends Plugin {
       options = extend({}, defaultOptions);
       options = extend(options, this.options);
     }
-
     let content = await this.getContent('utf8');
-
     let messages = linter.verify(content, options, {
       filename: this.file.path 
     });
-
+    messages = messages.map(item => {
+      return {
+        fatal: item.fatal,
+        message: item.message,
+        line: item.line,
+        column: item.column
+      }
+    });
     return messages;
   }
   /**
